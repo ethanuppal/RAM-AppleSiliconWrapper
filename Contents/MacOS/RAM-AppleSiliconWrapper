@@ -1,0 +1,24 @@
+#!/bin/bash
+
+RAM_FULL_PATH="$HOME/Library/Application Support/Steam/steamapps/common/RAM Random Access Mayhem/RAM.app/Contents/MacOS/RAM"
+
+RAM_DEMO_PATH="$HOME/Library/Application Support/Steam/steamapps/common/RAM Random Access Mayhem Demo/RAM.app/Contents/MacOS/RAM"
+
+if [ -f "$RAM_FULL_PATH" ]; then
+    echo "Full version of RAM found."
+    GAME_PATH="$RAM_FULL_PATH"
+elif [ -f "$RAM_DEMO_PATH" ]; then
+    echo "Demo version of RAM found."
+    GAME_PATH="$RAM_DEMO_PATH"
+else
+    osascript -e 'display dialog "RAM Random Access Mayhem is not installed. Please install it through Steam first." buttons {"OK"} default button "OK" with title "Application Not Found" with icon caution'
+    exit 1
+fi
+
+if [ "$(uname -m)" = "arm64" ]; then
+    echo "Apple Silicon detected, running with Rosetta 2..."
+    arch -x86_64 "$GAME_PATH"
+else
+    echo "Intel processor detected, running natively..."
+    "$GAME_PATH"
+fi
